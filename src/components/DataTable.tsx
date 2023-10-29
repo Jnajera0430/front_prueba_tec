@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { Data, DataUser } from '../interfaces/dataFetch.interface';
 import { useFetch } from '../Fetch/fetch';
 import { methodEnum } from '../enum/methodEnum';
+import { toast } from 'react-toastify';
 const ExpandedComponent = ({ data }: any) => <pre>{JSON.stringify(data, null, 2)}</pre>;
 const columns = [
     {
@@ -38,9 +39,25 @@ const DataTableComponent = () => {
     const [filterText, setFilterText] = useState('');
     useEffect(() => {
         const fetchData = async () => {
-            const result: Data<DataUser>[] = await useFetch('user', methodEnum.GET);
-            const data = result.map((item: Data<DataUser>) => (item.dataValues))
-            setDataFetch(data);
+            const response = (await useFetch('user', methodEnum.GET));
+            if (response.status === 200) {
+                const result: Data<DataUser>[] = response.data
+                const data = result.map((item: Data<DataUser>) => (item.dataValues))
+                toast("list user", {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    style:{
+                        background:"#90c182",
+                        color: "white"
+                    }
+                })
+                setDataFetch(data);
+            }
+            console.log(response);
         }
         fetchData();
     }, [])
@@ -69,6 +86,9 @@ const DataTableComponent = () => {
         setFilteredData(filteredItems);
     }, [dataFetch, filterText])
     return (<>
+        <h2>
+            Lista de usuarios
+        </h2>
         <input
             type="text"
             placeholder="Filtrar"

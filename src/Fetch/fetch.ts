@@ -10,6 +10,6 @@ export const useFetch = async (url: string, method: methodEnum = methodEnum.GET,
         body: JSON.stringify(body)
     })
 
-    const dataFetch:DataFetch<any> = await response.json();
-    return dataFetch.data ? dataFetch.data : dataFetch;
+    const dataFetch: DataFetch<any> = await response.json();
+    return dataFetch.data ? { data: dataFetch.data, status: response.status } : { data: dataFetch, status: response.status };
 }

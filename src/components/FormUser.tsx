@@ -1,9 +1,11 @@
 import '../App.css'
 import { StatusEnum } from '../enum/statusEnum';
 import { useState, ChangeEvent, FormEvent } from 'react'
-import { DataUser } from '../interfaces/dataFetch.interface';
+import { DataFetch, DataUser } from '../interfaces/dataFetch.interface';
 import { useFetch } from '../Fetch/fetch';
 import { methodEnum } from '../enum/methodEnum';
+import { toast } from 'react-toastify';
+import { ErrorValidate } from '../interfaces/errorFetch.interface';
 const FormUser = () => {
     const [user, setUser] = useState<DataUser>({
         nombres: "",
@@ -22,17 +24,45 @@ const FormUser = () => {
     }
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        try {
-            const result = await useFetch('user', methodEnum.POST, user);
-            console.log(result);
-        } catch (error) {
-
+        const result = await useFetch('user', methodEnum.POST, user);
+        if (result.status == 200 || result.status == 201) {
+            const data: DataFetch<any> = result.data;
+            toast(data.message, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                style: {
+                    background: "#90c182",
+                    color: "white"
+                }
+            })
+            const idTimer = setTimeout(() => {
+                window.location.reload()
+            }, 3000)
+            clearTimeout(idTimer)
         }
-        window.location.reload()
+        if (result.status === 400) {
+            const error: ErrorValidate = result.data;
+            toast(error.error, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                style: {
+                    background: "#f2dede",
+                    color: "white"
+                }
+            })
+        }
+
     }
     return (
         <div className='container'>
-
             <div className="header">
                 <h1>
                     Registrar usuarios

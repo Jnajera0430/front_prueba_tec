@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.main{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+}
+
+.form{
+    width: 35%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.table{
+    width: 65%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}

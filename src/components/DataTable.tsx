@@ -78,6 +78,7 @@ function DataTable() {
                     <Pagination.Prev
                         onClick={() => onChangeDataTable(dataUser.meta.page - 1)}
                         disabled={!dataUser.meta.hasPreviousPage}
+                        style={{paddingRight: "1rem"}}
                     />
                     <Pagination.Item active>{
                         dataUser.meta.page
@@ -85,6 +86,7 @@ function DataTable() {
                     <Pagination.Next
                         onClick={() => onChangeDataTable(dataUser.meta.page + 1)}
                         disabled={!dataUser.meta.hasNextPage}
+                        style={{paddingLeft: "1rem"}}
                     />
                 </div>
             </Pagination>

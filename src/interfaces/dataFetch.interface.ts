@@ -1,7 +1,10 @@
+import { MetaData } from "./page.interface";
+
 export interface DataFetch<T> {
     status?: number;
     message?: string;
-    data?: T
+    data?: T,
+    meta: MetaData
 }
 
 export interface OptionsData {

@@ -41,3 +41,39 @@
     border: none;
     cursor: pointer;
 }
+
+.table-container {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    max-height: 400px;
+    /* Altura máxima para habilitar el desplazamiento vertical */
+    overflow-y: auto;
+    /* Barra de desplazamiento vertical si es necesario */
+}
+.tableContainer >tr> th {
+    background-color: #f2f2f2;
+    
+}
+.theadTable{
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    font-weight: bold;
+}
+.tableContainer th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    font-weight: bold;
+}
+tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+.containerpageoption{
+    display: flex;
+}
+.containerFormPage{
+    display: flex;
+    padding-left: 1rem;
+}

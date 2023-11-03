@@ -71,7 +71,7 @@ const FormUser = () => {
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label htmlFor="">Nombres:</label>
-                    <input type="text" name="nombres" onChange={handleInput} />
+                    <input type="text" name="nombres" onChange={handleInput} autoFocus/>
                 </div>
                 <div className="form-group">
                     <label htmlFor="">Apellidos:</label>

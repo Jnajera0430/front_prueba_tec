@@ -1,8 +1,8 @@
 import { ToastContainer } from "react-toastify";
-import DataTableComponent from "./components/DataTable";
 import FormUser from "./components/FormUser";
 import './index.css'
 import 'react-toastify/dist/ReactToastify.css';
+import DataTable from "./components/DataTable";
 function App() {
   return (
     <>
@@ -12,7 +12,7 @@ function App() {
           <FormUser />
         </div>
         <div className="table">
-          <DataTableComponent />
+          <DataTable />
         </div>
       </div>
     </>

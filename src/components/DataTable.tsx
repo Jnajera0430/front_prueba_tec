@@ -1,103 +1,109 @@
-import DataTable from 'react-data-table-component';
-import { useState, useEffect } from 'react'
-import { Data, DataUser } from '../interfaces/dataFetch.interface';
-import { useFetch } from '../Fetch/fetch';
+import { Table, Pagination, Form } from 'react-bootstrap';
+import { UseContext } from '../api/UseContext';
+import { useEffect, useState, ChangeEvent } from 'react'
 import { methodEnum } from '../enum/methodEnum';
-import { toast } from 'react-toastify';
-const ExpandedComponent = ({ data }: any) => <pre>{JSON.stringify(data, null, 2)}</pre>;
-const columns = [
-    {
-        name: 'Nombres',
-        selector: (row: DataUser) => row.nombres,
-        sortable: true,
-    },
-    {
-        name: 'Apellidos',
-        selector: (row: DataUser) => row.apellidos,
-        sortable: true,
-    },
-    {
-        name: 'Telefono',
-        selector: (row: DataUser) => row.telefono,
-        sortable: true,
-    },
-    {
-        name: 'Correo',
-        selector: (row: DataUser) => row.email,
-        sortable: true,
-    },
-    {
-        name: 'Estado',
-        selector: (row: DataUser) => row.status,
-        sortable: true,
-    },
-];
-
-const DataTableComponent = () => {
-    const [dataFetch, setDataFetch] = useState<DataUser[]>([]);
-    const [filteredData, setFilteredData] = useState(dataFetch);
-    const [filterText, setFilterText] = useState('');
+import { OrderEnum } from '../enum/OrderPage.enum';
+import { takeOptions } from '../const/dataTable/takeOptions';
+import '../App.css'
+function DataTable() {
+    const [orderData, setOrderData] = useState<OrderEnum | string>(OrderEnum.ASC);
+    const [page, setPage] = useState<number>(1);
+    const [take, setTake] = useState<number>(10);
+    const { dataUser, onQuery } = UseContext();
+    const items = dataUser.data.map((item, i) => {
+        return (
+            <tr key={i}>
+                <td>{item.dataValues.id}</td>
+                <td>{item.dataValues.nombres}</td>
+                <td>{item.dataValues.apellidos}</td>
+                <td>{item.dataValues.edad}</td>
+                <td>{item.dataValues.telefono}</td>
+                <td>{item.dataValues.email}</td>
+                <td>{item.dataValues.status}</td>
+            </tr>
+        )
+    });
+    const onChangeDataTable = async (pageNum: number) => {
+        setPage(pageNum);
+    }
+    const onChangeTake = (e: ChangeEvent<HTMLSelectElement>) => {
+        setPage(1)
+        setTake(parseInt(e.target.value, 10))
+    }
+    const onChangeOrder = (e: ChangeEvent<HTMLSelectElement>) => {
+        setPage(1)
+        setOrderData(e.target.value)
+    }
     useEffect(() => {
-        const fetchData = async () => {
-            const response = (await useFetch('user', methodEnum.GET));
-            if (response.status === 200) {
-                const result: Data<DataUser>[] = response.data
-                const data = result.map((item: Data<DataUser>) => (item.dataValues))
-                toast("list user", {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    style:{
-                        background:"#90c182",
-                        color: "white"
-                    }
-                })
-                setDataFetch(data);
-            }
-            console.log(response);
+        async function fetchData() {
+            await onQuery(methodEnum.GET, { url: 'user', order: orderData, page: dataUser.meta.page, take: dataUser.meta.take })
         }
         fetchData();
     }, [])
     useEffect(() => {
-        const lowercasedFilter = filterText.toLowerCase();
-        const filteredItems = dataFetch.filter((item) => {
-            const lowercaseFilter = lowercasedFilter.toLowerCase();
-
-            if (item.nombres.toLowerCase().includes(lowercaseFilter) || item.apellidos.toLowerCase().includes(lowercaseFilter)) {
-                return true;
-            }
-
-            if (item.telefono === Number.parseInt(lowercaseFilter, 10)) {
-                return true;
-            }
-
-            if (item.email.toLowerCase().includes(lowercaseFilter)) {
-                return true;
-            }
-
-            if (item.status.toLowerCase().includes(lowercaseFilter)) {
-                return true;
-            }
-            return false;
-        });
-        setFilteredData(filteredItems);
-    }, [dataFetch, filterText])
-    return (<>
-        <h2>
-            Lista de usuarios
-        </h2>
-        <input
-            type="text"
-            placeholder="Filtrar"
-            onChange={(e) => setFilterText(e.target.value)}
-        />
-        <DataTable columns={columns} data={filteredData.length == 0 ? dataFetch : filteredData} selectableRows expandableRows
-            expandableRowsComponent={ExpandedComponent} />
-    </>
+        async function fetchData() {
+            await onQuery(methodEnum.GET, {
+                order: orderData,
+                page: page,
+                take: take,
+                url: 'user'
+            });
+        }
+        fetchData();
+    }, [take, page, orderData])
+    return (
+        <div>
+            <div><h1>Lista de usuarios</h1></div>
+            <Pagination className='containerpageoption'>
+                <div className='containerFormPage'>
+                    <label htmlFor="">Take:</label>
+                    <Form.Select value={take} onChange={onChangeTake}>
+                        {
+                            takeOptions.map((option, index) => (
+                                <option key={index} value={option}>
+                                    {option}
+                                </option>
+                            ))
+                        }
+                    </Form.Select>
+                </div>
+                <div className='containerFormPage'>
+                    <label htmlFor="">Order:</label>
+                    <Form.Select value={orderData} onChange={onChangeOrder}>
+                        <option value={OrderEnum.ASC}>{OrderEnum.ASC}</option>
+                        <option value={OrderEnum.DESC}>{OrderEnum.DESC}</option>
+                    </Form.Select>
+                </div>
+                <div className='containerFormPage'>
+                    <Pagination.Prev
+                        onClick={() => onChangeDataTable(dataUser.meta.page - 1)}
+                        disabled={!dataUser.meta.hasPreviousPage}
+                    />
+                    <Pagination.Item active>{
+                        dataUser.meta.page
+                    }</Pagination.Item>
+                    <Pagination.Next
+                        onClick={() => onChangeDataTable(dataUser.meta.page + 1)}
+                        disabled={!dataUser.meta.hasNextPage}
+                    />
+                </div>
+            </Pagination>
+            <Table striped bordered hover className="table-container">
+                <thead>
+                    <tr>
+                        <th className='theadTable'>ID</th>
+                        <th className='theadTable'>Nombres</th>
+                        <th className='theadTable'>Apellidos</th>
+                        <th className='theadTable'>Edad</th>
+                        <th className='theadTable'>Teléfono</th>
+                        <th className='theadTable'>Email</th>
+                        <th className='theadTable'>Status</th>
+                    </tr>
+                </thead>
+                <tbody>{items}</tbody>
+            </Table>
+        </div>
     );
 }
 
-export default DataTableComponent;
+export default DataTable;

@@ -1,6 +1,6 @@
 import { PropsWithChildren, createContext, useState } from "react";
 import { IContext } from "../interfaces/context.interface";
-import { MetaData, Page, QueryFetch } from "../interfaces/page.interface";
+import { Page, QueryFetch } from "../interfaces/page.interface";
 import { Data, DataUser } from "../interfaces/dataFetch.interface";
 import { useFetchQuery } from "../Fetch/fetch";
 import { methodEnum } from "../enum/methodEnum";
@@ -34,8 +34,8 @@ export const ContextProvider = (props: PropsWithChildren) => {
         }
     });
 
-    const onQuery = async (method: methodEnum, query: QueryFetch, body?:Search) => {
-        const result = await useFetchQuery(method, query,body);
+    const onQuery = async (method: methodEnum, query: QueryFetch, keyWords?:Search) => {
+        const result = await useFetchQuery(method, query,keyWords);
         if(result.meta){     
             setDataUser({
                 data: result.data,

@@ -19,7 +19,7 @@
     font-weight: bold;
 }
 
-.form-group input {
+.form-group > input {
     width: 80%;
     padding: 5px;
 }
@@ -76,4 +76,24 @@ tbody tr:nth-child(even) {
 .containerFormPage{
     display: flex;
     padding-left: 1rem;
+}
+
+.theadContainer{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.theadContainer .idInput{
+    width: 1.5rem;
+    max-width: 2rem;
+}
+
+.theadContainer .dataEmail{
+    width: 6rem;
+    max-width: 6rem;
+}
+.theadContainer .dataInput{
+    width: 4rem;
+    max-width: 4.5rem;
 }

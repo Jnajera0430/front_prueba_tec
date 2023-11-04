@@ -5,10 +5,12 @@ import { methodEnum } from '../enum/methodEnum';
 import { OrderEnum } from '../enum/OrderPage.enum';
 import { takeOptions } from '../const/dataTable/takeOptions';
 import '../App.css'
+import { Search } from '../interfaces/search.interface';
 function DataTable() {
     const [orderData, setOrderData] = useState<OrderEnum | string>(OrderEnum.ASC);
     const [page, setPage] = useState<number>(1);
     const [take, setTake] = useState<number>(10);
+    const [searchUser, setSearchUser] = useState<Search>({})
     const { dataUser, onQuery } = UseContext();
     const items = dataUser.data.map((item, i) => {
         return (
@@ -23,6 +25,14 @@ function DataTable() {
             </tr>
         )
     });
+
+    const onHandleSearch = (e:ChangeEvent<HTMLInputElement>) => {
+        setSearchUser({
+            ...searchUser,
+            [e.target.name]:e.target.value
+        });
+    }
+
     const onChangeDataTable = async (pageNum: number) => {
         setPage(pageNum);
     }
@@ -47,10 +57,10 @@ function DataTable() {
                 page: page,
                 take: take,
                 url: 'user'
-            });
+            },searchUser);
         }
-        fetchData();
-    }, [take, page, orderData])
+        fetchData();      
+    }, [take, page, orderData,searchUser])
     return (
         <div>
             <div><h1>Lista de usuarios</h1></div>
@@ -78,7 +88,7 @@ function DataTable() {
                     <Pagination.Prev
                         onClick={() => onChangeDataTable(dataUser.meta.page - 1)}
                         disabled={!dataUser.meta.hasPreviousPage}
-                        style={{paddingRight: "1rem"}}
+                        style={{ paddingRight: "1rem" }}
                     />
                     <Pagination.Item active>{
                         dataUser.meta.page
@@ -86,20 +96,69 @@ function DataTable() {
                     <Pagination.Next
                         onClick={() => onChangeDataTable(dataUser.meta.page + 1)}
                         disabled={!dataUser.meta.hasNextPage}
-                        style={{paddingLeft: "1rem"}}
+                        style={{ paddingLeft: "1rem" }}
                     />
                 </div>
             </Pagination>
             <Table striped bordered hover className="table-container">
                 <thead>
                     <tr>
-                        <th className='theadTable'>ID</th>
-                        <th className='theadTable'>Nombres</th>
-                        <th className='theadTable'>Apellidos</th>
-                        <th className='theadTable'>Edad</th>
-                        <th className='theadTable'>Teléfono</th>
-                        <th className='theadTable'>Email</th>
-                        <th className='theadTable'>Status</th>
+                        <th className='theadTable'>
+                            <div className='theadContainer'>
+                                <div>
+                                    ID
+                                </div>
+                                <input type="text" name='id' className='idInput' placeholder='filtrar' onChange={onHandleSearch} />
+                            </div>
+                        </th>
+                        <th className='theadTable'>
+                            <div className='theadContainer'>
+                                <div>
+                                    Nombres
+                                </div>
+                                <input type="text" name='nombres' className='dataInput' placeholder='filtrar' onChange={onHandleSearch} />
+                            </div>
+                        </th>
+                        <th className='theadTable'>
+                            <div className='theadContainer'>
+                                <div>
+                                    Apellidos
+                                </div>
+                                <input type="text" name='apellidos' className='dataInput' placeholder='filtrar' onChange={onHandleSearch} />
+                            </div>
+                        </th>
+                        <th className='theadTable'>
+                            <div className='theadContainer'>
+                                <div>
+                                    Edad
+                                </div>
+                                <input type="text" name='edad' className='dataInput' placeholder='filtrar' onChange={onHandleSearch} />
+                            </div>
+                        </th>
+                        <th className='theadTable'>
+                            <div className='theadContainer'>
+                                <div>
+                                    Teléfono
+                                </div>
+                                <input type="text" name='telefono' className='dataInput' placeholder='filtrar' onChange={onHandleSearch} />
+                            </div>
+                        </th>
+                        <th className='theadTable'>
+                            <div className='theadContainer'>
+                                <div>
+                                    Email
+                                </div>
+                                <input type="text" name='email' className='dataEmail' placeholder='filtrar' onChange={onHandleSearch} />
+                            </div>
+                        </th>
+                        <th className='theadTable'>
+                            <div className='theadContainer'>
+                                <div>
+                                    Status
+                                </div>
+                                <input type="text" name='status' className='dataInput' placeholder='filtrar' onChange={onHandleSearch} />
+                            </div>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>{items}</tbody>

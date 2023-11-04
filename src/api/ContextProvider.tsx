@@ -4,6 +4,7 @@ import { MetaData, Page, QueryFetch } from "../interfaces/page.interface";
 import { Data, DataUser } from "../interfaces/dataFetch.interface";
 import { useFetchQuery } from "../Fetch/fetch";
 import { methodEnum } from "../enum/methodEnum";
+import { Search } from "../interfaces/search.interface";
 
 export const Context = createContext<IContext | null>({
     dataUser: {
@@ -33,8 +34,8 @@ export const ContextProvider = (props: PropsWithChildren) => {
         }
     });
 
-    const onQuery = async (method: methodEnum, query: QueryFetch) => {
-        const result = await useFetchQuery(method, query);
+    const onQuery = async (method: methodEnum, query: QueryFetch, body?:Search) => {
+        const result = await useFetchQuery(method, query,body);
         if(result.meta){     
             setDataUser({
                 data: result.data,
